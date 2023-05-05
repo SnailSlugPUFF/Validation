@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Validation
 {
-    public partial class Program
+    public class Program
     {
         public static void Main()
         {
@@ -27,18 +27,18 @@ namespace Validation
             PropertyInfo studyyearProp = studentType.GetProperty("StudyYear");
 
             var context = new ValidationContext(student1);
-            var result = new List<ValidationResult>();
+            var results = ((IValidatable)student1).Validate(context);
 
-            Console.WriteLine($"Name: {studentType.Name}");             
-            Console.WriteLine($"Full Name: {studentType.FullName}");     
-            Console.WriteLine($"Namespace: {studentType.Namespace}");    
+            Console.WriteLine($"Name: {studentType.Name}");
+            Console.WriteLine($"Full Name: {studentType.FullName}");
+            Console.WriteLine($"Namespace: {studentType.Namespace}");
             Console.WriteLine($"Is struct: {studentType.IsValueType}");
-            Console.WriteLine($"Is class: {studentType.IsClass}");       
+            Console.WriteLine($"Is class: {studentType.IsClass}");
 
-            if (!Validator.TryValidateObject(student1, context, result, true))
+            if (results.Count > 0)
             {
                 Console.WriteLine("Не удалось создать объект Student");
-                foreach (var error in result)
+                foreach (var error in results)
                 {
                     Console.WriteLine(error.ErrorMessage);
                 }
